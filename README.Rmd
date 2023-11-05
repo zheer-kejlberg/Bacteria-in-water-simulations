@@ -1,18 +1,23 @@
-Simulating bacterial growth in water bottle
-================
-Zheer Kejlberg Al-Mashhadi
-2023-11-05
+---
+title: "Simulating bacterial growth in water bottle"
+author: "Zheer Kejlberg Al-Mashhadi"
+date: "2023-11-05"
+output: github_document
+---
 
 Load dependencies
 
-``` r
+```{r, message=FALSE, results='hide'}
+
 library(ggplot2)
 library(gridExtra)
+
 ```
 
 Set some basic variables
 
-``` r
+```{r}
+
 # Set basic vars
 splits <- 1
 hours <- 2*splits # two updates of bacterial number per hour
@@ -21,11 +26,13 @@ month <- 30*days
 t2 <- 12*hours # doubling time of bacterial load
 multiplier <- 2^(1/t2)
 no_of_sims <- 20
+
 ```
 
 Define all the functions
 
-``` r
+```{r}
+
 # Define function to refill bottle
 refill <- function(df, time) {
   vol_refilled <- 1000 - df[time-1,]$volume
@@ -135,71 +142,32 @@ run_sim <- function(scenario = FALSE) {
   print(sum(drunk$colonies, na.rm=TRUE))
   
 }
+
 ```
 
 Run the simulations
 
-``` r
+```{r}
+
 # Run the simulation with continuous refilling
 t1 <- as.numeric(rep(NA,no_of_sims))
 for (repetition in 1:no_of_sims) {
   t1[repetition] <- run_sim("continuous")
 }
-```
 
-    ## [1] 588092.4
-    ## [1] 1043426
-    ## [1] 333402.1
-    ## [1] 314135.4
-    ## [1] 508355.9
-    ## [1] 2622388
-    ## [1] 1132464
-    ## [1] 445508.5
-    ## [1] 357371.1
-    ## [1] 1001393
-    ## [1] 3977928
-    ## [1] 336702.7
-    ## [1] 655542.4
-    ## [1] 915481.3
-    ## [1] 990948.2
-    ## [1] 298273.4
-    ## [1] 773240.5
-    ## [1] 781327.9
-    ## [1] 495350.9
-    ## [1] 790518.3
 
-``` r
 # Run the simulation with refilling whenever empty
 t2_summary <- as.numeric(rep(NA,no_of_sims))
 for (repetition in 1:no_of_sims) {
   t2_summary[repetition] <- run_sim()
 }
-```
 
-    ## [1] 76231.69
-    ## [1] 66945.13
-    ## [1] 85469.91
-    ## [1] 81538.38
-    ## [1] 74653.32
-    ## [1] 70122.61
-    ## [1] 63139.04
-    ## [1] 66498.84
-    ## [1] 63577.14
-    ## [1] 88217.38
-    ## [1] 67575.25
-    ## [1] 67814.63
-    ## [1] 60375.77
-    ## [1] 73089.88
-    ## [1] 63747.15
-    ## [1] 68465.92
-    ## [1] 70357.91
-    ## [1] 66686.37
-    ## [1] 65621.27
-    ## [1] 81490.62
+```
 
 Create plots of distributions of total bacterial intake
 
-``` r
+```{r}
+
 # Create density plots
 t1_df <- as.data.frame(t1)
 t1_plot <- ggplot(t1_df, aes(x=t1)) +
@@ -212,11 +180,8 @@ t1_plot <- ggplot(t1_df, aes(x=t1)) +
 z1 <- as.matrix(summary(t1))
 z1 <- tableGrob(z1)
 grid.arrange(t1_plot, z1, heights=c(2.5,1))
-```
 
-![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
-``` r
 t2_df <- as.data.frame(t2_summary)
 t2_plot <- ggplot(t2_df, aes(x=t2_summary)) +
   geom_density() + labs(
@@ -228,6 +193,6 @@ t2_plot <- ggplot(t2_df, aes(x=t2_summary)) +
 z2 <- as.matrix(summary(t2_summary))
 z2 <- tableGrob(z2)
 grid.arrange(t2_plot, z2, heights=c(2.5,1))
-```
 
-![](README_files/figure-gfm/unnamed-chunk-5-2.png)<!-- -->
+
+```
